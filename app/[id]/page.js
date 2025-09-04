@@ -5,7 +5,7 @@ import { use, useEffect, useState } from "react"
 
 
 export default function PostByIDPage({params}){
-    let [post,usePost] = useState({})
+    let [post,setPost] = useState({})
         const router = useRouter();
     let pm = use(params)
     useEffect(()=>{
@@ -15,7 +15,7 @@ export default function PostByIDPage({params}){
         .then(data =>{
             console.log(data?.post)
             if(data?.status)
-                usePost(data?.post)
+                setPost(data?.post)
             else
                 router.push("/")
         })

@@ -4,12 +4,12 @@ import { useEffect, useState } from "react"
 
 
 export default function PostPage(){
-    let [post,usePost] = useState([])
+    let [post,setPost] = useState([])
     useEffect(()=>{
         fetch("/api/post")
         .then(res => res.json())
         .then(data =>{
-            usePost(data?.post || [])
+            setPost(data?.post || [])
         })
     },[])
 
@@ -19,12 +19,12 @@ export default function PostPage(){
       evtSource.onmessage = (event) => {
         const data = JSON.parse(event.data);
           if(data?.type == "new"){
-            usePost((p) => [data?.post,...p])
+            setPost((p) => [data?.post,...p])
           }else if (data?.type == "update"){
             let post = data?.post
             let innerDiv = document.getElementById(`post-${post?.id}`)
             if(innerDiv){
-              usePost((p)=>{
+              setPost((p)=>{
                 return [...p.filter(elm => elm?.id != post?.id),post]
               })
             }

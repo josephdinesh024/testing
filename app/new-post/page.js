@@ -3,12 +3,12 @@ import Link from "next/link"
 import { useState, useEffect } from "react"
 
 export default function NewPostPage(){
-    let [post,usePost] = useState([])
+    let [post,setPost] = useState([])
     useEffect(()=>{
         fetch("/api/post")
         .then(res => res.json())
         .then(data =>{
-            usePost(data?.post || [])
+            setPost(data?.post || [])
         })
     },[])
 
@@ -27,7 +27,7 @@ export default function NewPostPage(){
                 });
                 let data = await res.json()
                 if(data?.status){
-                    usePost([data?.post,...post])
+                    setPost([data?.post,...post])
                 }else{
                     console.log("Error",data?.message)
                 }
