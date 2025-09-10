@@ -31,3 +31,30 @@ export async function GET(req, params) {
 
     return Response.json(res)
 }
+
+export async function PUT(req, params) {
+    try {
+
+        let data = await req.json()
+        let pm = await params?.params
+        let ID = parseInt(pm?.id) || 0
+        if(ID == 0){
+            throw new Error("Invalid post id")
+        }else{
+            let post = await prisma.post.update({
+                where:{id:ID},
+                data
+            })
+            broadcastMessage({"type":"update",post})
+            res.status = 1
+            res.post = post
+            res.message = null
+        }
+    }catch (error) {
+        res.status = 0
+        res.post = null
+        res.message = error.message
+    }
+
+    return Response.json(res)
+}

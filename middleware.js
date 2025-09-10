@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
-import { verify } from 'jsonwebtoken';
+import { verifyToken } from './lib/auth';
 
 const PUBLIC_ROUTES = ['/', '/login'];
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-export function middleware(request) {
+export async function middleware(request) {
     const { pathname } = request.nextUrl;
 
     // Allow public paths
@@ -15,7 +15,14 @@ export function middleware(request) {
 
     // const token = request.headers.get('authorization')?.split(" ")[1];
     // for sever side we can get cookie
-    const token = request.cookies.get('access_token');
+    let token
+    if(pathname.startsWith("/api")){
+        token = request.headers.get('authorization')?.split(" ")[1];
+    }
+    if(!token){
+        token = request.cookies.get('access_token')?.value
+    }
+    
     if (!token) {
         // No token: redirect to login
         return NextResponse.redirect(new URL('/login', request.url));
@@ -23,15 +30,14 @@ export function middleware(request) {
 
     try {
         //  Verify token
-        const decoded = verify(token, JWT_SECRET);
-
+        const decoded = await verifyToken(token);  // { userId: 1, iat: 1757520054 }
         // if (decoded.role !== 'admin') {
         //     return NextResponse.redirect(new URL('/unauthorized', request.url));
         // }
 
         //  Optionally pass user info via request headers
         const requestHeaders = new Headers(request.headers);
-        requestHeaders.set('user-id', decoded.userId);
+        requestHeaders.set('x-user-id', decoded.userId);
 
         return NextResponse.next({
             request: {
@@ -47,7 +53,6 @@ export function middleware(request) {
 // Middleware applies to.
 export const config = {
     matcher: [
-        '/dashboard',
         '/new-post',
         '/api/secure/:path*',
     ],

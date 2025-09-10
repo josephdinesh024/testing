@@ -18,36 +18,36 @@ enum UserRole {
   admin
 }
 
-model User{
-  id Int @id @default(autoincrement())
-  name String
-  email String @unique
-  password String
-  role       UserRole  @default(user)
-  status Boolean   @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model User {
+  id         Int      @id @default(autoincrement())
+  name       String
+  email      String   @unique
+  password   String
+  role       UserRole @default(user)
+  status     Boolean  @default(true)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 }
 
 model Category {
-  id         Int        @id @default(autoincrement())
-  name       String     @unique
-  imageURL   String?
-  status   Boolean    @default(true)
-  post   Post[]
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
+  id         Int      @id @default(autoincrement())
+  name       String   @unique
+  image_url  String?
+  status     Boolean  @default(true)
+  post       Post[]
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 }
 
 model Post {
-  id Int @id @default(autoincrement())
-  title String
-  thumbnailUrl String
-  content String
-  imageUrl String
-  categoryName String
-  categoryId Int
-  category Category       @relation(fields: [categoryId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            Int      @id @default(autoincrement())
+  title         String
+  thumbnail_url String
+  content       String
+  image_url     String
+  category_name String
+  category_id   Int
+  category      Category @relation(fields: [category_id], references: [id])
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
 }

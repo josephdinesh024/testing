@@ -1,26 +1,26 @@
 import prisma from "@/lib/prisma"
-import { hashPassword } from "@/lib/util"
+import { broadcastMessage } from "../../ws/route"
 
 const res = {
     "status" : 0,
-    "user" : null,
+    "post" : null,
     "message" : null
 }
 
 export async function GET(req, params) {
     try {
 
-        let data = await prisma.user.findMany({
+        let data = await prisma.post.findMany({
             orderBy: {
-                updatedAt: 'desc',
+                updated_at: 'desc',
             },
         })
         res.status = 1
-        res.user = data
+        res.post = data
         res.message = null
     }catch (error) {
         res.status = 0
-        res.user = null
+        res.post = null
         res.message = error?.message
     }
 
@@ -28,23 +28,18 @@ export async function GET(req, params) {
 }
 
 export async function POST(req, params) {
-    let userId = req?.user-id
     try {
         let data = await req.json()
-        if(data["password"]){
-            data["password"] = hashPassword(data["password"])
-        }else{
-            throw new Error("Invalid data formate")
-        }
-        let post = await prisma.user.create({
+        let post = await prisma.post.create({
             data
         })
+        broadcastMessage({"type":"new",post})
         res.status = 1
-        res.user = post
+        res.post = post
         res.message = null
     }catch (error) {
         res.status = 0
-        res.user = null
+        res.post = null
         res.message = error?.message
     }
 
