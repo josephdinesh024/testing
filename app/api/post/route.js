@@ -21,7 +21,7 @@ export async function GET(req, params) {
     }catch (error) {
         res.status = 0
         res.post = null
-        res.message = error
+        res.message = error?.message
     }
 
     return Response.json(res)
@@ -40,7 +40,7 @@ export async function POST(req, params) {
     }catch (error) {
         res.status = 0
         res.post = null
-        res.message = error
+        res.message = error?.message
     }
 
     return Response.json(res)
